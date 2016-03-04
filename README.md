@@ -21,21 +21,21 @@ cliente:
 
 al escribir h se mostrará un menú de ayuda:
 
----------------------------------
+ 
  Canales: 
  s : Suscribirte a un canal. 
  q : Desuscribirte a un canal. 
  d : Muestra canales. 
----------------------------------
+
  Topicos: 
  S : Suscribirte a un tópico.
  Q : Desuscribirte a un tópico. 
  D : Muestra tópico. 
----------------------------------
+
  Log: 
  l : Log de topico   
  exit : Salir 
----------------------------------
+
 
 Para suscribirse a un canal con un topico basta escribir
 
