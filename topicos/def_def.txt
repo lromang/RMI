@@ -1,0 +1,35 @@
+Fecha: 2016/03/04 01:36:07
+Cliente: Tu servidor
+Channel: def
+Topico: def
+Mensaje: Canal creado, agregando usuario: Luis
+Fecha: 2016/03/04 01:36:07
+Cliente: Servidor
+Channel: def
+Topico: def
+Mensaje: Usuario inexistente, creando usuario.
+Fecha: 2016/03/04 01:37:10
+Cliente: Servidor
+Channel: def
+Topico: def
+Mensaje: Canal existente, agregando usuario: Mora
+Fecha: 2016/03/04 01:37:10
+Cliente: Servidor
+Channel: def
+Topico: def
+Mensaje: Usuario inexistente, creando usuario.
+Fecha: 2016/03/04 01:37:51
+Cliente: Mora
+Channel: def
+Topico: def
+Mensaje: noticias
+Fecha: 2016/03/04 01:38:02
+Cliente: Mora
+Channel: def
+Topico: def
+Mensaje: Hola
+Fecha: 2016/03/04 01:38:28
+Cliente: Server
+Channel: def
+Topico: def
+Mensaje: 

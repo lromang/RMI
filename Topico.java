@@ -34,7 +34,7 @@ public class Topico {
         this.nombre = nombre;
         this.canal  = canal;
         clientes    = new Hashtable<String, IChatClient>();
-        ruta        = "/home/luis/Documents/ITAM/spring_2016/distribuidos/proy1/topicos" + canal + "_" + nombre + ".txt";
+        ruta        = "/home/luis/Documents/ITAM/spring_2016/distribuidos/proy1/topicos/" + canal + "_" + nombre + ".txt";
     }
 
     /*

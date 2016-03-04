@@ -23,21 +23,21 @@ public class ChatServer extends UnicastRemoteObject implements IChatServer {
     
     
     public ChatServer() throws RemoteException {
-       Channel Default = new Channel("Default");
-       Topico def      = new Topico("Default", "Default");
-       Default.addTopic("Default", def);
+       Channel Default = new Channel("def");
+       Topico def      = new Topico("def", "def");
+       Default.addTopic("def", def);
     }
     
     @Override
     public synchronized void login(String nameCliente, IChatClient nc) throws RemoteException {
         if(!myClients.contains(nameCliente)){
             myClients.put(nameCliente, nc);
-            loginChannel(nameCliente, nc, "Default");
-            Message mensaje = new Message("Servidor", "Creando usuario y entrando", "Default", "Default");
+            loginChannel(nameCliente, nc, "def");
+            Message mensaje = new Message("Servidor", "Usuario inexistente, creando usuario.", "def", "def");
             sendUnicast(mensaje, nameCliente);
             System.out.println("Client " + nameCliente + " has logged." );
         }else{
-            Message mensaje = new Message("Servidor", "No se pudo crear usuario", "Default", "Default");
+            Message mensaje = new Message("Servidor", "El usuario ya existe", "def", "def");
             sendUnicast(mensaje, nameCliente);
         }  
     }
@@ -46,11 +46,11 @@ public class ChatServer extends UnicastRemoteObject implements IChatServer {
     public synchronized void logout(String nameC) throws RemoteException {
         if(myClients.containsKey(nameC)){
             myClients.remove(nameC);
-            Message mensaje = new Message("Servidor", "Usuario salida", "Default", "Default");
+            Message mensaje = new Message("Servidor", "Se ha eliminado al usuario", "def", "def");
             sendUnicast(mensaje, nameC);
             System.out.println("Client " + nameC + " has logged out." );
         }else{
-            Message mensaje = new Message("Servidor", "No se pudo quitar usuario", "Default", "Default");
+            Message mensaje = new Message("Servidor", "El usuario no existe", "def", "def");
             sendUnicast(mensaje, nameC);
         }    
     }
@@ -58,17 +58,20 @@ public class ChatServer extends UnicastRemoteObject implements IChatServer {
     @Override
     public synchronized void loginChannel(String nameCliente, IChatClient nc, String canal) throws RemoteException {
         if(myChannels.containsKey(canal)){
+            // Se agrega cliente a canal existente.
             Channel aux = myChannels.get(canal);
             aux.addClient(nameCliente, nc);
-            subscribeToTopic(nameCliente, nc, "Default", canal);
-            Message mensaje = new Message("Servidor", "Canal existente, agregando usuario: " + nameCliente, canal, "Default");
+            subscribeToTopic(nameCliente, nc, "def", canal);
+            Message mensaje = new Message("Servidor", "Canal existente, agregando usuario: " + nameCliente, canal, "def");
             sendUnicast(mensaje, nameCliente);
         }else{
+            // Se agrega cliente a canal no existente.
+            // Se crea canal.
             Channel nuevo = new Channel(canal);
             nuevo.addClient(nameCliente, nc);
             myChannels.put(canal, nuevo);
-            subscribeToTopic(nameCliente, nc, "Default", canal);
-            Message mensaje = new Message("Tu servidor", "Canal creado, agregando usuario: " + nameCliente, canal, "Default");
+            subscribeToTopic(nameCliente, nc, "def", canal);
+            Message mensaje = new Message("Tu servidor", "Canal creado, agregando usuario: " + nameCliente, canal, "def");
             sendUnicast(mensaje, nameCliente);    
         }
         Channel auxiliar = myChannels.get(canal);
@@ -76,7 +79,7 @@ public class ChatServer extends UnicastRemoteObject implements IChatServer {
         while (entChater.hasMoreElements()) {
             ((IChatClient) entChater.nextElement()).receiveSubscribeToChannel(nameCliente, canal);
         }
-        System.out.println("Client " + nameCliente + " has logged in Channel: " + canal+ ".");
+        System.out.println("Cliente " + nameCliente + " ingresó al canal: " + canal+ ".");
     }
 
     @Override
@@ -94,18 +97,23 @@ public class ChatServer extends UnicastRemoteObject implements IChatServer {
                 ((IChatClient) entChater.nextElement()).receiveUnsubscribeToChannel(nameC, canal);
             }
         }
-        System.out.println("Client " + nameC + " has logged out from Channel: " + canal + ".");  
+        System.out.println("Cliente " + nameC + " salió del canal: " + canal + ".");  
     }
     
     @Override
-      public synchronized void subscribeToTopic(String name, IChatClient newClient, String topico, String canal) throws RemoteException {
+      public synchronized void subscribeToTopic(String name,
+                                                IChatClient newClient,
+                                                String topico,
+                                                String canal) throws RemoteException {
         if (myChannels.containsKey(canal)) {
             Channel auxiliar = myChannels.get(canal);
             boolean res = false;
+            // Si existe el tópico y el cliente no pertence a este.
             if(auxiliar.containsTopico(topico) && !auxiliar.getTopico(topico).containsClient(name)) {
                 myChannels.get(canal).getTopico(topico).addClient(name, newClient);
                 res = true;
             }
+            // Si no existe el tópico
             if(!auxiliar.containsTopico(topico) ) {
                 Topico nuevoT = new Topico(topico, canal); 
                 myChannels.get(canal).addTopic(topico, nuevoT);
@@ -117,16 +125,15 @@ public class ChatServer extends UnicastRemoteObject implements IChatServer {
                 while (entChater.hasMoreElements()) {
                     ((IChatClient) entChater.nextElement()).receiveSubscribeToTopic(name, canal, topico);
                 }
-                System.out.println("Se agrego: "+ name+ " a topico: " + canal + ":" + topico);
+                System.out.println("Se agrego: "+ name + " a topico: " + canal + ":" + topico);
             }else{
                 System.out.println("No se pudo agregar el topico " + canal + ":" + topico);
             }
-            
         }else{
             System.out.println("No se pudo agregar al canal " + canal);
-        }     
+        }
     }
-    
+
     @Override
     public synchronized void unsubscribeToTopic(String name, String topico, String canal) throws RemoteException {
         if(myChannels.containsKey(canal)){
@@ -138,7 +145,7 @@ public class ChatServer extends UnicastRemoteObject implements IChatServer {
             while (entChater.hasMoreElements()) {
                 ((IChatClient) entChater.nextElement()).receiveUnsubscribeToChannel(name, canal);
             }
-            System.out.println("Se desagrego: "+ name+ " a topico: " + canal + "_"+topico);
+            System.out.println("Se quito a : " + name + " del topico: " + canal + "_" + topico);
         }
         
     }
@@ -154,15 +161,18 @@ public class ChatServer extends UnicastRemoteObject implements IChatServer {
                 if(dd != null){
                     dd.receiveMessage(message);
                     aux.getTopico(message.topic).agregaMensaje(message);
-                    System.out.println("Message from client " + message.name + " Canal:Topico: " + message.canal + ":"+ message.topic +":\n" + message.text);
+                    System.out.println(" Cliente:\n"   + message.name  +
+                                       "\n Canal:\n " + message.canal +
+                                       "\n Tópico:\n"  + message.topic +
+                                       ":\n" + message.text);
                 }
             }
         }
     }
-    
+
     @Override
     public synchronized void sendBroadcast(Message message) throws RemoteException {
-        
+
         if(myChannels.containsKey(message.canal)){
            Channel aux = myChannels.get(message.canal);
            if (aux.containsTopico(message.topic)) {
@@ -172,19 +182,22 @@ public class ChatServer extends UnicastRemoteObject implements IChatServer {
                         ((IChatClient) entChater.nextElement()).receiveMessage(message);
                     }
                     aux.getTopico(message.topic).agregaMensaje(message);
-                    System.out.println("Message from client " + message.name + " Topico: " + message.canal + ":"+ message.topic +":\n" + message.text);
-                }  
+                    System.out.println(" Cliente:\n"   + message.name  +
+                                       "\n Canal:\n " + message.canal +
+                                       "\n Tópico:\n"  + message.topic +
+                                       ":\n" + message.text);
+                }
            }
-        }     
+        }
     }
-    
+
     public synchronized void getLog(String name, String canal, String topico)throws RemoteException{
         String text = "";
         if(myChannels.containsKey(canal)){
             Channel aux = myChannels.get(canal);
             if(aux.containsTopico(topico)){
                 text = aux.getTopico(topico).getLog();
-                Message mensaje = new Message("Server", text, "Default", "Default");
+                Message mensaje = new Message("Server", text, "def", "def");
                 sendUnicast(mensaje, name);
             }
         }
@@ -199,7 +212,7 @@ public class ChatServer extends UnicastRemoteObject implements IChatServer {
                     text = text + ((Topico) entChater.nextElement()).nombre + ",";
             }
             
-            Message m = new Message("Server",text, canal, "Default");
+            Message m = new Message("Server",text, canal, "def");
             Channel aux = myChannels.get(canal);
             aux.getTopico(m.topic).agregaMensaje(m);
             myClients.get(name).receiveMessage(m);
@@ -215,8 +228,8 @@ public class ChatServer extends UnicastRemoteObject implements IChatServer {
         while (entChater.hasMoreElements()) {
             text = text + ((Channel) entChater.nextElement()).name + ",";
         }
-        Message m = new Message("Server",text, "Default", "Default");
-        Channel aux = myChannels.get("Default");
+        Message m = new Message("Server",text, "def", "def");
+        Channel aux = myChannels.get("def");
         aux.getTopico(m.topic).agregaMensaje(m);
         myClients.get(name).receiveMessage(m);
     }
@@ -231,7 +244,6 @@ public class ChatServer extends UnicastRemoteObject implements IChatServer {
         }
         try {
             LocateRegistry.createRegistry(52365);
-            //System.setProperty("java.rmi.server.codebase", downloadLocation);
             ChatServer server = new ChatServer();
             Naming.rebind(serverURL, server);
             System.out.println("Chat server ready");

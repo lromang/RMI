@@ -1,6 +1,0 @@
-2015/04/02 20:18:19|Tu servidor|Default|Default|Canal creado, agregando usuario: maria
-2015/04/02 20:18:19|Servidor|Default|Default|Creando usuario y entrando
-2015/04/02 20:18:32|Servidor|Default|Default|Canal existente, agregando usuario: karen
-2015/04/02 20:18:32|Servidor|Default|Default|Creando usuario y entrando
-2015/04/02 20:20:39|Server|Default|Default|2015/04/02 20:19:15|maria|canal|tema|canal:tema:el tema
-

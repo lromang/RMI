@@ -1,2 +1,0 @@
-2015/04/02 20:18:39|Tu servidor|canal|Default|Canal creado, agregando usuario: maria
-2015/04/02 20:18:59|Servidor|canal|Default|Canal existente, agregando usuario: karen

@@ -55,7 +55,7 @@ public class chatClient extends UnicastRemoteObject implements IChatClient {
         }catch (RemoteException e) {
             System.out.println(e.getMessage());
         } 
-        System.out.println("Topico: " + canal + ":" +topico + " Cliente: " + name);
+        System.out.println("Cliente:" + name + " \n Ingresa: \n -canal:" + canal + "\n -topico:" + topico);
     }
     
     private void deleteFromTopic(String name, String topico, String canal){
@@ -64,7 +64,7 @@ public class chatClient extends UnicastRemoteObject implements IChatClient {
         }catch(RemoteException e){
             System.out.println(e.getMessage());
         }
-        System.out.println("Se quitó del Tópico: " + canal + ":" + topico + " a Cliente: " + name);
+        System.out.println("Cliente:" + name + " \n Abandona: \n -canal:" + canal + "\n -topico:" + topico);
     }
     
     private void getAllTopics(String canal){
@@ -94,7 +94,7 @@ public class chatClient extends UnicastRemoteObject implements IChatClient {
     private void addToChannel(String name, chatClient cliente, String canal){
         try{
             server.loginChannel(name, (IChatClient)cliente, canal);
-            System.out.println("Se agregó el Canal: " + canal  + " Cliente: " + name);
+            System.out.println("Cliente:" + name + " \n Ingresa: \n -canal:" + canal );
         }catch (RemoteException e) {
             System.out.println(e.getMessage());
         } 
@@ -104,7 +104,7 @@ public class chatClient extends UnicastRemoteObject implements IChatClient {
     private void deleteFromChannel(String name, String canal){
         try{
             server.logoutChannel(name, canal);
-            System.out.println("Se borró del Canal: " + canal  + " Cliente: " + name);
+            System.out.println("Cliente:" + name + " \n Abandona: \n -canal:" + canal );
         }catch(RemoteException e){
             System.out.println(e.getMessage());
         }
@@ -179,94 +179,102 @@ public class chatClient extends UnicastRemoteObject implements IChatClient {
             
             chatClient clte = new chatClient(name, args[1]);
             
-            String menuCanal = "Comandos reservados: \n 1 : suscribirte a un canal. \n 2 : desuscribirte a un canal. \n 3: Muestra canales. ";
-            String menuTopico = "Comandos reservados: \n 4 : suscribirte a un tópico. \n 5 : desuscribirte a un tópico. \n 6: Muestra tópico. ";
-            String menuNormal = "Comandos reservados: \n 7 : Log de topico y quit : Salir ";
+            String menuCanal =  " Canales: \n s : Suscribirte a un canal. \n q : Desuscribirte a un canal. \n d : Muestra canales. ";
+            String menuTopico = " Topicos: \n S : Suscribirte a un tópico.\n Q : Desuscribirte a un tópico. \n D : Muestra tópico. ";
+            String menuNormal = " Log: \n l : Log de topico   \n exit : Salir ";
+
             
-            System.out.println(menuCanal);
-            System.out.println(menuTopico);
-            System.out.println(menuNormal);
-            
-            strCad = pideCadena(name + " -- Escribe aqui: \n");
-            while (!strCad.equals("quit")) {
+            strCad = pideCadena(name + ": \n");
+            while (!strCad.equals("exit")) {
                 char entrada = strCad.charAt(0);
                 String aux;
                 switch(entrada){
-                    case '1'://Suscribirse a un canal
-                        aux = strCad.substring(1);
+                case 'h':
+                    System.out.println("---------------------------------");
+                    System.out.println(menuCanal);
+                    System.out.println("---------------------------------");
+                    System.out.println(menuTopico);
+                    System.out.println("---------------------------------");
+                    System.out.println(menuNormal);
+                    System.out.println("---------------------------------");
+                    strCad = pideCadena(name + ": \n");
+                    break;
+                    
+                case 's'://Suscribirse a un canal
+                    aux = strCad.substring(1);
                         aux = aux.trim();
                         if(aux.length() != 0){
                             clte.addToChannel(name, clte, aux);
                         }else{
-                            System.out.println("Se requiere: nombre de canal");
+                            System.out.println("Estructura comando: \n s [canal]");
                         }
-                        strCad = pideCadena(name + " -- Escribe aqui: \n");
+                        strCad = pideCadena(name + ": \n");
                         break;
                         
-                    case '2': //Desuscribirse de un canal
+                    case 'q': //Desuscribirse de un canal
                         aux = strCad.substring(1);
                         aux = aux.trim();
                         if(aux.length() != 0){
                             clte.deleteFromChannel(name, aux);
                         }else{
-                            System.out.println("Se requiere: nombre de canal");
+                            System.out.println("Estructura comando: \n q [canal]");
                         }
-                        strCad = pideCadena(name + " -- Escribe aqui: \n");
+                        strCad = pideCadena(name + ": \n");
                         break;
                         
-                    case '3': //Muestra los canales
+                    case 'd': //Muestra los canales
                         clte.getAllChannels();
-                        strCad = pideCadena(name + " -- Escribe aqui: \n");
+                        strCad = pideCadena(name + ": \n");
                         break;
                     
-                    case '4': //Suscribirse a un topico
+                    case 'S': //Suscribirse a un topico
                         String[] aux2 = strCad.split(" ");
                         if (aux2.length >= 3){
                             clte.addToTopic(name, clte, aux2[2].trim(), aux2[1].trim());
                         }else{
-                             System.out.println("Se requiere: canal:topico");
+                             System.out.println("Estructura comando: \n s [canal] [topico]");
                         }
-                        strCad = pideCadena(name + " -- Escribe aqui: \n");
+                        strCad = pideCadena(name + ": \n");
                         break;
                     
-                    case '5': //desuscribirse de un topico
+                    case 'Q': //desuscribirse de un topico
                         String[] aux3 = strCad.split(" ");
                         if (aux3.length >= 3){
                             clte.deleteFromTopic(name, aux3[2].trim(), aux3[1].trim());
                         }else{
-                             System.out.println("Se requiere: canal:topico");
+                             System.out.println("Estructura comando: \n s [canal] [topico]");
                         }
-                        strCad = pideCadena(name + " -- Escribe aqui: \n");
+                        strCad = pideCadena(name + ": \n");
                         break;
                     
-                    case '6': //Muestra topicos
+                    case 'D': //Muestra topicos
                         String aux4 = strCad.substring(1);
                         aux = aux4.trim();
                         if(aux.length() != 0){
                             clte.getAllTopics(aux);
                         }else{
-                            System.out.println("Se requiere: nombre de canal");
+                            System.out.println("Estructura comando: \n s [canal]");
                         }
-                        strCad = pideCadena(name + " -- Escribe aqui: \n");
+                        strCad = pideCadena(name + ": \n");
                         break;
                         
-                    case '7': //log del topico
+                    case 'l': //log del topico
                         String[] aux5 = strCad.split(" ");
                         if (aux5.length >= 3){
                             clte.getLog(aux5[1].trim(), aux5[2].trim());
                         }else{
-                             System.out.println("Se requiere: canal:topico");
+                             System.out.println("Estructura comando: \n s [canal] [topico]");
                         }
-                        strCad = pideCadena(name + " -- Escribe aqui: \n");
+                        strCad = pideCadena(name + ": \n");
                         break;
                     default: //escribir mensaje a chat
                         String[] aux6 = strCad.split(":");
                         if (aux6.length >= 3){
                             clte.sendTextToChat(strCad, aux6[0].trim(),aux6[1].trim());
                         }else{
-                            clte.sendTextToChat(strCad,"Default","Default");
+                            clte.sendTextToChat(strCad, "def", "def");
                         }
-                        strCad = pideCadena(name + " -- Escribe aqui: \n");
+                        strCad = pideCadena(name + ": \n");
                         break;
                 }   
             }
