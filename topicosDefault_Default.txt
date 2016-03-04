@@ -1,0 +1,11 @@
+2016/03/03 12:34:19|Tu servidor|Default|Default|Canal creado, agregando usuario: luis
+2016/03/03 12:34:19|Servidor|Default|Default|Creando usuario y entrando
+2016/03/03 12:34:21|Server|Default|Default|Default,
+2016/03/03 20:20:45|Tu servidor|Default|Default|Canal creado, agregando usuario: luis
+2016/03/03 20:20:45|Servidor|Default|Default|Creando usuario y entrando
+2016/03/03 20:20:50|Server|Default|Default|Default,
+2016/03/03 20:23:15|Tu servidor|Default|Default|Canal creado, agregando usuario: luis
+2016/03/03 20:23:15|Servidor|Default|Default|Creando usuario y entrando
+2016/03/03 20:29:11|Tu servidor|Default|Default|Canal creado, agregando usuario: Luis
+2016/03/03 20:29:11|Servidor|Default|Default|Creando usuario y entrando
+2016/03/03 20:29:33|Server|Default|Default|Default,
